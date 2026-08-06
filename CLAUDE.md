@@ -2,8 +2,58 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project status
+## What this project is
 
-This repository is currently empty — no source code, build configuration, or documentation exists yet beyond this file and `README.md`. There is no codebase to describe: no commands, no architecture, no dependencies.
+A Claude Code Skill (`filename-pattern-inductor`) that reverse-engineers a filename/
+placement rule-set from an existing, already-organized collection of files — it feeds
+a *different* skill (developed elsewhere) that suggests names/locations for *new*
+files based on their content. The repository root **is** the installable skill
+package: `SKILL.md` at the root, helper code under `scripts/`. There is no build step
+— installing it means copying or symlinking this whole folder to
+`~\.claude\skills\filename-pattern-inductor\`.
 
-When implementation begins, update this file to reflect the actual stack, build/lint/test commands, and high-level architecture.
+See `README.md` for usage and `SKILL.md` for the full agent-facing procedure — this
+file only covers what a future Claude instance needs to work on the repo itself.
+
+## Commands
+
+Run the test suite:
+
+```
+python -m pytest scripts/test_save_versioned_result.py -v
+```
+
+Requires `python` on `PATH`. No other dependencies, no lint config, no build step —
+mirrors the sibling `Claude Mover` tool project's minimal footprint rather than a full
+packaged app.
+
+## Architecture
+
+Two very different kinds of "logic" live here, deliberately kept separate:
+
+- **`SKILL.md`** is the actual deliverable: prose instructions for whichever Claude
+  instance runs the skill at invocation time (resolving input directories, applying
+  scan-size guardrails, batching content reads out to subagents, inducing the
+  two-tier abstract/concrete rule-set, rendering the two output tables). This part is
+  inherently LLM judgment — clustering files by name/location/content correlation
+  isn't something to script, so don't try to replace it with deterministic code.
+- **`scripts/save_versioned_result.py`** is the one piece of genuinely deterministic
+  logic: given a target path, it archives any existing live file(s) matching that
+  base name under `archive\` (adding a version suffix if one didn't already have
+  one) and writes the new content one version higher — the same manual
+  archive-and-version convention already established in the user's `healthdb-coverage`
+  personal skill. `SKILL.md` always calls this script for the save step rather than
+  reimplementing the version arithmetic inline. Its test suite
+  (`scripts/test_save_versioned_result.py`) is the thing to run after touching it —
+  the versioning edge cases (unsuffixed vs. suffixed live files, a version deleted
+  without archiving, values past `99`, case-insensitive matches on Windows) are easy
+  to get subtly wrong without them.
+
+## Versioning and releases
+
+No `pyproject.toml` and no in-repo version field — SemVer lives purely in git tags
+(`vX.Y.Z`), matching `Claude Mover`'s lightweight convention rather than the heavier
+CI-gated packaging in `Receipt Board` (there's no build artifact here to gate).
+Changes land on a feature branch and merge to `master`; commit messages follow
+Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`, `chore:`). First release tag
+is planned as `v0.1.0`.
