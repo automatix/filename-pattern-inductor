@@ -29,3 +29,11 @@ Follow-up: user approved a **public** GitHub remote. Created `automatix/filename
 - Saved a global feedback memory (auto-memory system, not this file): user wants concise responses generally, not essay-style multi-section write-ups — stated explicitly as a global instruction, not project-specific.
 
 **Result** – No code changed this session (pure design discussion; `master` stayed clean). The `v0.1.0` release remains the shipped state, but its scan-size-guardrail approach is considered superseded and **should not be extended or relied on as-is** — the redesign above (recon tree → proposed chunk plan → approval → evidence-log-backed cumulative rule-set) is the agreed direction for the next implementation round. That round has **not** started yet — user wants to finish the design discussion first. Next session should pick up at: confirm evidence-log-now-vs-later reading above, then move to planning (new `Plan`-mode round, since the original plan at `ticklish-snuggling-quill.md` only covers the superseded `v0.1.0` design).
+
+## 2026-10-05 — Status review; evidence log deferred to backlog
+
+**Request** – User asked for the project's current stage and what remains before the skill is usable; then decided the persistent evidence log is deferred to the backlog (resolving the open question from `2026-08-08`) and asked for a recap of the skill's planned functionality.
+
+**Done** – Reviewed repo state (`v0.1.0` released, `16` tests passing, skill not installed under `~/.claude/skills/`). Filed the evidence log as [#4](https://github.com/automatix/filename-pattern-inductor/issues/4).
+
+**Result** – Next implementation round scope: recon tree → proposed chunk plan (bytes + file count per batch) → user approval → batched content analysis → rule-set; **without** the evidence log. Still pending: planning round, and gaps against the global skill rules (`references/briefing.md`, `VERSION.md`, `tests/` with the six obligatory kinds, release build with `--list`).
