@@ -61,3 +61,11 @@ Follow-up: user approved a **public** GitHub remote. Created `automatix/filename
 **Done** – [#9](https://github.com/automatix/filename-pattern-inductor/issues/9): front-matter `name: induct-names` (per Claude Code docs `name` overrides the directory name for the slash command); install path in docs now `~\.claude\skills\induct-names\`. Removed `arguments: [input]` — the docs confirm it substitutes the first shell-split token, which broke paths with spaces; `SKILL.md` now parses raw `$ARGUMENTS`, line breaks as the only separator (several lines → several directories; one line → directory or list file). Briefing, `README.md`, `CLAUDE.md` updated; `tests/test_front_matter.py` added (`23` tests pass).
 
 **Result** – Released `v0.3.0` (minor: invocation name changed). Unverified: the docs don't state that newlines in `$ARGUMENTS` survive; must be checked in a real run after installation.
+
+## 2026-10-05 — Target surfaces: desktop app and Cowork
+
+**Request** – User clarified that skills are always developed for Claude Code, the Claude desktop app and Claude Cowork (web and Chrome extension only where sensible); asked for backlog entries for whatever these surfaces need.
+
+**Done** – Filed [#11](https://github.com/automatix/filename-pattern-inductor/issues/11) (Cowork support), [#12](https://github.com/automatix/filename-pattern-inductor/issues/12) (desktop-app Chat support), [#13](https://github.com/automatix/filename-pattern-inductor/issues/13) (release build producing an installable ZIP).
+
+**Result** – The README's "No" for Chat/Cowork is an unverified `v0.1.0` assumption, to be replaced by the outcome of `#11`/`#12`.
