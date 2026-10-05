@@ -1,6 +1,6 @@
 # Filename Pattern Inductor
 
-Version v0.2.0. Every run opens with a short briefing and names this version again in its closing report.
+Version v0.3.0. Every run opens with a short briefing and names this version again in its closing report.
 
 A Claude Code Skill that reverse-engineers a filename/placement rule-set from an
 existing, already-organized collection of files. Point it at one or more folders and
@@ -12,14 +12,24 @@ for *new* files based on their content.
 ## Usage
 
 ```
-/filename-pattern-inductor <directory-or-list-file> [--output <path>]
+/induct-names <directory | list-file | one directory per line> [--output <path>]
 ```
 
 | Invocation | Effect |
 |---|---|
-| `/filename-pattern-inductor D:\Accounting\Invoices` | Scans that one directory recursively. |
-| `/filename-pattern-inductor D:\scan-roots.txt` | `scan-roots.txt` lists one directory per line (`#`-comments allowed) — the only reliable way to scan several folders at once, since folder paths can contain spaces. |
-| `/filename-pattern-inductor D:\Accounting\Invoices --output D:\rules\invoice-rules.md` | Saves to that path instead of the default. Re-running against the same `--output` path accumulates versions (`_v01`, `_v02`, …) in an `archive\` subfolder next to it. |
+| `/induct-names D:\Accounting\Invoices` | Scans that one directory recursively. |
+| `/induct-names`, then one directory per line (Shift+Enter between lines) | Scans all listed directories. Line breaks are the only separator, so paths with spaces need no quoting. |
+| `/induct-names D:\scan-roots.txt` | `scan-roots.txt` lists one directory per line (`#`-comments allowed). Useful for a list kept between runs. |
+| `/induct-names D:\Accounting\Invoices --output D:\rules\invoice-rules.md` | Saves to that path instead of the default. Re-running against the same `--output` path accumulates versions (`_v01`, `_v02`, …) in an `archive\` subfolder next to it. |
+
+Several directories inline:
+
+```
+/induct-names
+D:\Docs\Rechnungen
+D:\Docs\Verträge
+--output D:\rules\naming-rules.md
+```
 
 If the total file count is large (over `200` files), the skill asks for confirmation
 before reading any content. There is no upper limit: once confirmed, it processes
@@ -85,15 +95,15 @@ bundled Python script — it only works where Claude Code has that access.
 
 | Surface | Skill location | Works? |
 |---|---|---|
-| **Claude Code (CLI)** | `~\.claude\skills\filename-pattern-inductor\` | **Yes** |
+| **Claude Code (CLI)** | `~\.claude\skills\induct-names\` | **Yes** |
 | **Desktop app "Code"** | shares `~\.claude\skills\` | **Yes** — it's Claude Code under the hood |
 | **Desktop app Chat (GUI)** | Settings → Capabilities → Skills (as a ZIP) | **No** — sandboxed, no access to your local filesystem |
 | **Cowork** | same Capabilities/Skills mechanism | **No** — cloud sandbox, can't reach arbitrary local folders |
 
 **To install for Claude Code:** copy or symlink this repository to
-`C:\Users\<user>\.claude\skills\filename-pattern-inductor\` (personal/global —
+`C:\Users\<user>\.claude\skills\induct-names\` (personal/global —
 available in every project). A project-local install would instead go to
-`<project>\.claude\skills\filename-pattern-inductor\`.
+`<project>\.claude\skills\induct-names\`.
 
 > **Restart note:** if `~\.claude\skills\` didn't exist yet, Claude Code only picks up
 > the new skill after a restart (or a new session). Later edits to an already-detected

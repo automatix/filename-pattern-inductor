@@ -53,3 +53,11 @@ Follow-up: user approved a **public** GitHub remote. Created `automatix/filename
 **Done** – [#7](https://github.com/automatix/filename-pattern-inductor/issues/7): `references/briefing.md` (`200`-word ceiling, tables for steps and inputs), `SKILL.md` "Step zero" (show translated briefing with version line, no waiting, once per conversation) and version in closing report; version `v0.2.0` declared in `VERSION.md`, `SKILL.md` heading, end of front-matter `description`, under the `README.md` title; `tests/test_version_consistency.py` enforces agreement. `CLAUDE.md` versioning section rewritten (no longer "tags only").
 
 **Result** – Released `v0.2.0`. Multiple directories were already supported via a list file (one path per line); inline multiple paths are not.
+
+## 2026-10-05 — `/induct-names` and inline directory list
+
+**Request** – Make the skill invokable as `/induct-names` and accept several directories directly after the command.
+
+**Done** – [#9](https://github.com/automatix/filename-pattern-inductor/issues/9): front-matter `name: induct-names` (per Claude Code docs `name` overrides the directory name for the slash command); install path in docs now `~\.claude\skills\induct-names\`. Removed `arguments: [input]` — the docs confirm it substitutes the first shell-split token, which broke paths with spaces; `SKILL.md` now parses raw `$ARGUMENTS`, line breaks as the only separator (several lines → several directories; one line → directory or list file). Briefing, `README.md`, `CLAUDE.md` updated; `tests/test_front_matter.py` added (`23` tests pass).
+
+**Result** – Released `v0.3.0` (minor: invocation name changed). Unverified: the docs don't state that newlines in `$ARGUMENTS` survive; must be checked in a real run after installation.
