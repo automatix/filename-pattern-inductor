@@ -1,5 +1,7 @@
 # Filename Pattern Inductor
 
+Version v0.2.0. Every run opens with a short briefing and names this version again in its closing report.
+
 A Claude Code Skill that reverse-engineers a filename/placement rule-set from an
 existing, already-organized collection of files. Point it at one or more folders and
 it induces "content like *this* tends to end up named/placed like *that*" — a
@@ -105,8 +107,12 @@ available in every project). A project-local install would instead go to
 ## Testing
 
 ```
-python -m pytest scripts/test_save_versioned_result.py -v
+python -m pytest scripts tests -v
 ```
+
+`tests/test_version_consistency.py` checks that `VERSION.md`, the `SKILL.md` heading, the end of
+the `SKILL.md` front-matter `description` and the version line under this title all agree, and
+that the briefing exists. Raise the version in all four places together.
 
 ## Files
 
@@ -114,4 +120,7 @@ python -m pytest scripts/test_save_versioned_result.py -v
   procedure, output format, example rules).
 - `scripts/save_versioned_result.py` — deterministic archive+version+write helper.
 - `scripts/test_save_versioned_result.py` — its test suite.
+- `references/briefing.md` — the short how-to shown at the start of every run.
+- `VERSION.md` — the skill version, machine-readable.
+- `tests/test_version_consistency.py` — checks that every declared version agrees.
 - `README.md` — this document.

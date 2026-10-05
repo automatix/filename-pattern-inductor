@@ -45,3 +45,11 @@ Follow-up: user approved a **public** GitHub remote. Created `automatix/filename
 **Done** – [#5](https://github.com/automatix/filename-pattern-inductor/issues/5): removed the refusal step from `SKILL.md` guardrails (explicit "no upper limit, never refuse or silently reduce" once confirmed) and updated `README.md`. Original scan-root list from August was searched for (repo, `local/`, transcripts) and not found — must be recreated.
 
 **Result** – Released as `v0.1.1`. Confirmation threshold of `200` files remains; the recon/chunk-plan redesign is still pending.
+
+## 2026-10-05 — Briefing and visible version
+
+**Request** – Add a short briefing (how-to) shown at every run, modeled on Fast Apply but shorter; make the skill version always visible, following Fast Apply; question whether several directories can be passed.
+
+**Done** – [#7](https://github.com/automatix/filename-pattern-inductor/issues/7): `references/briefing.md` (`200`-word ceiling, tables for steps and inputs), `SKILL.md` "Step zero" (show translated briefing with version line, no waiting, once per conversation) and version in closing report; version `v0.2.0` declared in `VERSION.md`, `SKILL.md` heading, end of front-matter `description`, under the `README.md` title; `tests/test_version_consistency.py` enforces agreement. `CLAUDE.md` versioning section rewritten (no longer "tags only").
+
+**Result** – Released `v0.2.0`. Multiple directories were already supported via a list file (one path per line); inline multiple paths are not.

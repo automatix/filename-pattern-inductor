@@ -1,19 +1,31 @@
 ---
 name: filename-pattern-inductor
-description: Recursively scans one or more directories, correlates each file's name, location, and content, and induces a two-tier filename/placement rule-set (abstract general conventions plus concrete per-recurring-case rules) as two Markdown tables — printed in chat and saved to a versioned result file. Invoke as /filename-pattern-inductor <directory-or-list-file> [--output <path>].
+description: Recursively scans one or more directories, correlates each file's name, location, and content, and induces a two-tier filename/placement rule-set (abstract general conventions plus concrete per-recurring-case rules) as two Markdown tables — printed in chat and saved to a versioned result file. Invoke as /filename-pattern-inductor <directory-or-list-file> [--output <path>]. Version v0.2.0.
 argument-hint: [directory-or-list-file] [--output <path>?]
 arguments: [input]
 disable-model-invocation: true
 allowed-tools: Read, Write, Glob, Bash, PowerShell
 ---
 
-# Filename Pattern Inductor (`filename-pattern-inductor`)
+# Filename Pattern Inductor (v0.2.0)
 
 Reverse-engineers a filename/placement rule-set from an existing, already-organized
 collection of files: point it at one or more folders and it infers "content like
 *this* tends to end up named/placed like *that*." The output is a two-tier rule-set —
 a handful of abstract conventions plus many concrete per-recurring-case rules — meant
 to feed a *different* skill that suggests names/locations for *new* files.
+
+## Step zero: the briefing
+
+Before anything else, show the user `${CLAUDE_SKILL_DIR}/references/briefing.md`, translated
+into their language. Verbatim in substance, not in wording: same sections, same brevity, nothing
+added, and **the tables stay tables**.
+
+Open it with one line naming the version: "Filename Pattern Inductor vX.Y.Z", the version from
+the heading of this file.
+
+Then continue immediately. **Do not wait for a reply**: it is a signpost, not a question. Do not
+repeat it on a second run in the same conversation; once is orientation, twice is noise.
 
 ## Setup (once per machine)
 
@@ -123,6 +135,8 @@ another, keep only the outermost and say so.
 8. Report back to the user: the final saved path, and the preamble summary (scan
    roots, file counts). The two tables were already shown in step 4 — no need to
    repeat them in full again, just confirm they were saved.
+   **Name the version** in this report, the second and last time in the run:
+   "Filename Pattern Inductor vX.Y.Z", the version from the heading of this file.
 
 ## Output format
 

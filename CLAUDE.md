@@ -20,7 +20,7 @@ file only covers what a future Claude instance needs to work on the repo itself.
 Run the test suite:
 
 ```
-python -m pytest scripts/test_save_versioned_result.py -v
+python -m pytest scripts tests -v
 ```
 
 Requires `python` on `PATH`. No other dependencies, no lint config, no build step —
@@ -51,9 +51,11 @@ Two very different kinds of "logic" live here, deliberately kept separate:
 
 ## Versioning and releases
 
-No `pyproject.toml` and no in-repo version field — SemVer lives purely in git tags
-(`vX.Y.Z`), matching `Claude Mover`'s lightweight convention rather than the heavier
-CI-gated packaging in `Receipt Board` (there's no build artifact here to gate).
-Changes land on a feature branch and merge to `master`; commit messages follow
-Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`, `chore:`). First release tag
-is planned as `v0.1.0`.
+The skill version stands in four places that must agree: `VERSION.md`, the `SKILL.md`
+heading (`# Filename Pattern Inductor (vX.Y.Z)`), the end of the `SKILL.md` front-matter
+`description` (`... Version vX.Y.Z.`) and the line under the `README.md` title.
+`tests/test_version_consistency.py` enforces this. Each run names the version twice: in the
+briefing (`references/briefing.md`) and in the closing report. Releases are git tags (`vX.Y.Z`)
+plus a GitHub Release; no build artifact. Changes land on a feature branch and merge to
+`master`; commit messages follow Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`,
+`chore:`).
