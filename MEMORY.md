@@ -69,3 +69,11 @@ Follow-up: user approved a **public** GitHub remote. Created `automatix/filename
 **Done** – Filed [#11](https://github.com/automatix/filename-pattern-inductor/issues/11) (Cowork support), [#12](https://github.com/automatix/filename-pattern-inductor/issues/12) (desktop-app Chat support), [#13](https://github.com/automatix/filename-pattern-inductor/issues/13) (release build producing an installable ZIP).
 
 **Result** – The README's "No" for Chat/Cowork is an unverified `v0.1.0` assumption, to be replaced by the outcome of `#11`/`#12`.
+
+## 2026-10-05 — Test-run preparation, two change requests
+
+**Request** – Test run over 20 scan roots (two with `<YEAR>`/`<MONTH>` placeholders), output `<YYYYMMDD-hhmmss>_filename-patterns.md`; file two change requests.
+
+**Done** – Filed [#14](https://github.com/automatix/filename-pattern-inductor/issues/14) (rename command to `/induct-filenames`) and [#15](https://github.com/automatix/filename-pattern-inductor/issues/15) (update an existing patterns file instead of creating a new one). Recon: ~`9 550` files, ~`11 GB`, ~`6 000` PDFs (largest: `myDocs\work` `2 619`, `myDocs\finances` `1 853`, `ER` 2021–2026 `1 789`).
+
+**Result** – User chose a full run in a separate session with another model; handed over a ready prompt. Output goes to `local/outputs/`.
