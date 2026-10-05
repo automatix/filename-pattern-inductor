@@ -19,8 +19,9 @@ for *new* files based on their content.
 | `/filename-pattern-inductor D:\scan-roots.txt` | `scan-roots.txt` lists one directory per line (`#`-comments allowed) — the only reliable way to scan several folders at once, since folder paths can contain spaces. |
 | `/filename-pattern-inductor D:\Accounting\Invoices --output D:\rules\invoice-rules.md` | Saves to that path instead of the default. Re-running against the same `--output` path accumulates versions (`_v01`, `_v02`, …) in an `archive\` subfolder next to it. |
 
-If the total file count is large, the skill asks for confirmation (over `200` files)
-or declines as out of scope (over `5000` files) before reading any content.
+If the total file count is large (over `200` files), the skill asks for confirmation
+before reading any content. There is no upper limit: once confirmed, it processes
+the full set, however large.
 
 ## Output format
 

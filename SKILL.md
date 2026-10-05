@@ -53,11 +53,9 @@ another, keep only the outermost and say so.
    of these (the user explicitly asked for it).
 2. If the total file count exceeds **200**, report the count (overall and per scan
    root) and ask the user whether to proceed, narrow the input, or cap it. Do not
-   read content until they answer.
-3. If the total exceeds **5000**, say plainly that this scale is outside what the
-   skill is designed for (content-by-content induction does not scale that far) and
-   suggest a representative subset instead of attempting the full set.
-4. For each remaining file, skip content reads — classify by name/extension/location
+   read content until they answer. There is no upper limit: if the user confirms,
+   process the full set, however large it is — never refuse or silently reduce it.
+3. For each remaining file, skip content reads — classify by name/extension/location
    only — for common binary/media extensions (images, audio, video, archives,
    executables, fonts) and for anything above roughly 2 MB. Note in the final output
    which files were classified this way, since those rows rest on weaker evidence.
