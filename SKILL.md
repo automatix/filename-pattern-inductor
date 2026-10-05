@@ -1,13 +1,12 @@
 ---
-name: filename-pattern-inductor
-description: Recursively scans one or more directories, correlates each file's name, location, and content, and induces a two-tier filename/placement rule-set (abstract general conventions plus concrete per-recurring-case rules) as two Markdown tables — printed in chat and saved to a versioned result file. Invoke as /filename-pattern-inductor <directory-or-list-file> [--output <path>]. Version v0.2.0.
-argument-hint: [directory-or-list-file] [--output <path>?]
-arguments: [input]
+name: induct-names
+description: Recursively scans one or more directories, correlates each file's name, location, and content, and induces a two-tier filename/placement rule-set (abstract general conventions plus concrete per-recurring-case rules) as two Markdown tables — printed in chat and saved to a versioned result file. Invoke as /induct-names followed by a directory, a list file, or several directories one per line, optionally --output <path>. Version v0.3.0.
+argument-hint: "<directory | list-file | one directory per line> [--output <path>]"
 disable-model-invocation: true
 allowed-tools: Read, Write, Glob, Bash, PowerShell
 ---
 
-# Filename Pattern Inductor (v0.2.0)
+# Filename Pattern Inductor (v0.3.0)
 
 Reverse-engineers a filename/placement rule-set from an existing, already-organized
 collection of files: point it at one or more folders and it infers "content like
@@ -33,25 +32,33 @@ Requires `python` on `PATH` (stdlib only — nothing to install).
 
 ## Arguments
 
-`$ARGUMENTS` holds the raw invocation text. If it contains `--output`, split there:
-everything before it is the input spec (`$input`), everything after it is the output
-path override (trim surrounding whitespace/quotes; expand a leading `~`). If
-`--output` is absent, the entire `$ARGUMENTS` string is `$input`.
+The invocation text, verbatim:
 
-## Input: `$input`
+```
+$ARGUMENTS
+```
 
-Trim `$input` of surrounding quotes/whitespace, then resolve it into a list of
-absolute scan-root directories:
+If it contains `--output`, split there: everything before it is the **input spec**,
+everything after it is the output path override (trim surrounding whitespace/quotes;
+expand a leading `~`). If `--output` is absent, the entire text is the input spec.
 
-- **Names an existing directory** → that is the one scan root.
-- **Names an existing file** → read it as UTF-8 text; each non-empty line that
-  doesn't start with `#` is one directory path (trim whitespace, expand a leading
-  `~`). These are the scan roots. This is the only reliable way to pass *multiple*
-  directories — Windows paths routinely contain spaces (this very repo's own path is
-  a live example), so they can't be safely space-separated inline.
-- **Names neither** (typo, a relative path that doesn't resolve from the session's
-  cwd, etc.) → do not guess. State what you tried to resolve and ask the user for the
-  correct path(s).
+## Input spec
+
+Trim the input spec of surrounding whitespace, then resolve it into a list of
+absolute scan-root directories. Line breaks are the only separator: never split a
+line at spaces, because Windows paths routinely contain them (this very repo's own
+path is a live example).
+
+- **Several non-empty lines** → each non-empty line that doesn't start with `#` is
+  one directory path (trim whitespace and surrounding quotes, expand a leading `~`).
+  These are the scan roots.
+- **One line naming an existing directory** → that is the one scan root.
+- **One line naming an existing file** → read it as UTF-8 text and apply the
+  several-lines rule above to its content. Useful for a list kept between runs.
+- **Anything that doesn't resolve** (typo, a relative path that doesn't resolve from
+  the session's cwd, a listed line that is not an existing directory, several paths
+  that arrived on one line) → do not guess. State what you tried to resolve and ask
+  the user for the correct path(s).
 
 Resolve every scan root to an absolute path. If one scan root is a subdirectory of
 another, keep only the outermost and say so.
@@ -74,7 +81,7 @@ another, keep only the outermost and say so.
 
 ## Procedure
 
-1. Resolve `$input` and the guardrails above.
+1. Resolve the input spec and the guardrails above.
 2. Read content for every remaining file (the `Read` tool's own handling of PDFs,
    notebooks, and large text files is fine — don't fight it). If there are more than
    ~40 such files, batch them (~20–40 per batch) and delegate each batch to a

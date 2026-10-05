@@ -4,13 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this project is
 
-A Claude Code Skill (`filename-pattern-inductor`) that reverse-engineers a filename/
+A Claude Code Skill (`filename-pattern-inductor`, invoked as `/induct-names`) that reverse-engineers a filename/
 placement rule-set from an existing, already-organized collection of files — it feeds
 a *different* skill (developed elsewhere) that suggests names/locations for *new*
 files based on their content. The repository root **is** the installable skill
 package: `SKILL.md` at the root, helper code under `scripts/`. There is no build step
 — installing it means copying or symlinking this whole folder to
-`~\.claude\skills\filename-pattern-inductor\`.
+`~\.claude\skills\induct-names\`.
 
 See `README.md` for usage and `SKILL.md` for the full agent-facing procedure — this
 file only covers what a future Claude instance needs to work on the repo itself.

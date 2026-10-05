@@ -27,7 +27,7 @@ under which name and in which folder.
 
 | Input | Meaning |
 |---|---|
-| folders | One folder, or a `.txt` file listing one folder per line. |
+| folders | One folder, several folders one per line, or a `.txt` file listing them. |
 | `--output` | Optional. Result file or folder; default: current directory. |
 
 ## What comes out
