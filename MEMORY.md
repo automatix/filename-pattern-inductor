@@ -37,3 +37,11 @@ Follow-up: user approved a **public** GitHub remote. Created `automatix/filename
 **Done** – Reviewed repo state (`v0.1.0` released, `16` tests passing, skill not installed under `~/.claude/skills/`). Filed the evidence log as [#4](https://github.com/automatix/filename-pattern-inductor/issues/4).
 
 **Result** – Next implementation round scope: recon tree → proposed chunk plan (bytes + file count per batch) → user approval → batched content analysis → rule-set; **without** the evidence log. Still pending: planning round, and gaps against the global skill rules (`references/briefing.md`, `VERSION.md`, `tests/` with the six obligatory kinds, release build with `--list`).
+
+## 2026-10-05 — Remove the 5000-file refusal
+
+**Request** – Drop the rule that the skill declines scans over `5000` files; large scans should only require confirmation and then be processed in full. Also: is the skill usable if installed now?
+
+**Done** – [#5](https://github.com/automatix/filename-pattern-inductor/issues/5): removed the refusal step from `SKILL.md` guardrails (explicit "no upper limit, never refuse or silently reduce" once confirmed) and updated `README.md`. Original scan-root list from August was searched for (repo, `local/`, transcripts) and not found — must be recreated.
+
+**Result** – Released as `v0.1.1`. Confirmation threshold of `200` files remains; the recon/chunk-plan redesign is still pending.
