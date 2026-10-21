@@ -77,3 +77,11 @@ Follow-up: user approved a **public** GitHub remote. Created `automatix/filename
 **Done** – Filed [#14](https://github.com/automatix/filename-pattern-inductor/issues/14) (rename command to `/induct-filenames`) and [#15](https://github.com/automatix/filename-pattern-inductor/issues/15) (update an existing patterns file instead of creating a new one). Recon: ~`9 550` files, ~`11 GB`, ~`6 000` PDFs (largest: `myDocs\work` `2 619`, `myDocs\finances` `1 853`, `ER` 2021–2026 `1 789`).
 
 **Result** – User chose a full run in a separate session with another model; handed over a ready prompt. Output goes to `local/outputs/`.
+
+## 2026-10-21 — POSIX paths created stray trees on `D:\` (#16)
+
+**Request** – Handover: the test run (session `fc6dc2df`) created `D:\c\...` and `D:\mnt\c\...` scratch trees; find the cause, fix it, add a test.
+
+**Done** – [#16](https://github.com/automatix/filename-pattern-inductor/issues/16). Cause: `SKILL.md` step 2 left the hand-off of subagent batch results undefined, so the run improvised scratch paths that crossed shells. A third symptom was a file `C:Users...process_batch.py` in the repo root (an unquoted backslash path through Git Bash). It held private data, so it was moved to the session scratchpad, not committed. Added `scripts/paths.py` (maps `/c/...` and `/mnt/c/...` to their drive, rejects rooted paths without a drive), `scripts/write_batch_result.py` (subagents pipe JSONL to it), `save_versioned_result.py` now normalizes its paths, and `SKILL.md` has a "Paths across shells" section plus one fixed results directory in `C:/...` form. Tests use synthetic paths only, plus a `--help` start test for every shipped script.
+
+**Result** – Released `v0.3.1` (patch: bug fix). `45` tests pass.
