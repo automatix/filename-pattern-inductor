@@ -18,6 +18,10 @@ a persistent counter.
 Usage:
     python save_versioned_result.py --target "<dir>\\<base_name>.<ext>" --content-file <path>
 
+Both paths go through `paths.py`: a Git Bash (`/c/...`) or WSL (`/mnt/c/...`)
+spelling lands on the drive it names, and a rooted path without a drive is
+rejected instead of being written to the current drive.
+
 Prints only the final written path to stdout; diagnostics go to stderr.
 """
 
@@ -28,6 +32,8 @@ import re
 import shutil
 import sys
 from pathlib import Path
+
+from paths import normalize_path, path_arg
 
 VERSION_SUFFIX_RE = re.compile(r"_v(\d+)$", re.IGNORECASE)
 
@@ -76,6 +82,7 @@ def _scan_dir(directory: Path, pattern: re.Pattern[str]) -> list[tuple[Path, int
 
 
 def save_versioned_result(target: Path, content: str) -> Path:
+    target = normalize_path(target)
     target_dir, base_name, ext = parse_target(target)
     target_dir.mkdir(parents=True, exist_ok=True)
     archive_dir = target_dir / "archive"
@@ -114,8 +121,8 @@ def save_versioned_result(target: Path, content: str) -> Path:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--target", required=True, type=Path)
-    parser.add_argument("--content-file", required=True, type=Path)
+    parser.add_argument("--target", required=True, type=path_arg)
+    parser.add_argument("--content-file", required=True, type=path_arg)
     args = parser.parse_args()
 
     try:
