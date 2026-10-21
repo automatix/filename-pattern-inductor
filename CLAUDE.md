@@ -37,7 +37,7 @@ Two very different kinds of "logic" live here, deliberately kept separate:
   two-tier abstract/concrete rule-set, rendering the two output tables). This part is
   inherently LLM judgment — clustering files by name/location/content correlation
   isn't something to script, so don't try to replace it with deterministic code.
-- **`scripts/save_versioned_result.py`** is the one piece of genuinely deterministic
+- **`scripts/save_versioned_result.py`** is the core piece of deterministic
   logic: given a target path, it archives any existing live file(s) matching that
   base name under `archive\` (adding a version suffix if one didn't already have
   one) and writes the new content one version higher — the same manual
@@ -48,6 +48,14 @@ Two very different kinds of "logic" live here, deliberately kept separate:
   the versioning edge cases (unsuffixed vs. suffixed live files, a version deleted
   without archiving, values past `99`, case-insensitive matches on Windows) are easy
   to get subtly wrong without them.
+- **`scripts/write_batch_result.py`** is where a content-read subagent saves its JSONL
+  batch result (`<results dir>/r<NNN>.jsonl`); `SKILL.md` fixes the results directory
+  once and hands it to every subagent verbatim.
+- **`scripts/paths.py`** normalizes every path the scripts take: Git Bash (`/c/...`) and
+  WSL (`/mnt/c/...`) spellings map to their drive, a rooted path without a drive is
+  rejected. Without it, native Windows Python resolves such paths against the current
+  drive and creates stray trees there (issue `#16`). New scripts that take a path must
+  parse it with `paths.path_arg`.
 
 ## Versioning and releases
 
