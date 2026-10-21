@@ -1,6 +1,6 @@
 # Filename Pattern Inductor
 
-Version v0.3.0. Every run opens with a short briefing and names this version again in its closing report.
+Version v0.3.1. Every run opens with a short briefing and names this version again in its closing report.
 
 A Claude Code Skill that reverse-engineers a filename/placement rule-set from an
 existing, already-organized collection of files. Point it at one or more folders and
@@ -79,7 +79,9 @@ the one already used by the `healthdb-coverage` skill.
 2. Enumerates every file recursively (excluding `.git`, `node_modules`, and similar
    generated/vendored directories) and applies the size guardrails above.
 3. Reads content for each remaining file, batching large sets out to parallel
-   subagents so only compact per-file summaries come back to the main context.
+   subagents. Each subagent saves its compact per-file summaries through
+   `scripts/write_batch_result.py` into one results directory the main run fixes
+   up front, so only paths come back to the main context.
 4. Correlates filename, folder location, and content to induce abstract and
    concrete/case-based rules (a concrete rule needs at least `2` consistent example
    files before it's promoted — a single example is noise, not a rule).
@@ -111,7 +113,7 @@ available in every project). A project-local install would instead go to
 
 ## Requirements
 
-- `python` on `PATH` (stdlib only — `scripts/save_versioned_result.py` has no
+- `python` on `PATH` (stdlib only — the scripts under `scripts/` have no
   dependencies to install).
 
 ## Testing
@@ -130,7 +132,13 @@ that the briefing exists. Raise the version in all four places together.
   procedure, output format, example rules).
 - `scripts/save_versioned_result.py` — deterministic archive+version+write helper.
 - `scripts/test_save_versioned_result.py` — its test suite.
+- `scripts/write_batch_result.py` — writes one subagent's JSONL batch result.
+- `scripts/paths.py` — shared path normalization: maps Git Bash (`/c/...`) and WSL
+  (`/mnt/c/...`) paths to their drive and rejects rooted paths without a drive, so
+  nothing is written to the current drive by mistake.
+- `scripts/test_paths.py`, `scripts/test_write_batch_result.py` — their test suites.
 - `references/briefing.md` — the short how-to shown at the start of every run.
 - `VERSION.md` — the skill version, machine-readable.
 - `tests/test_version_consistency.py` — checks that every declared version agrees.
+- `tests/test_scripts_start.py` — checks that every shipped script answers `--help`.
 - `README.md` — this document.

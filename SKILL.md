@@ -1,12 +1,12 @@
 ---
 name: induct-names
-description: Recursively scans one or more directories, correlates each file's name, location, and content, and induces a two-tier filename/placement rule-set (abstract general conventions plus concrete per-recurring-case rules) as two Markdown tables — printed in chat and saved to a versioned result file. Invoke as /induct-names followed by a directory, a list file, or several directories one per line, optionally --output <path>. Version v0.3.0.
+description: Recursively scans one or more directories, correlates each file's name, location, and content, and induces a two-tier filename/placement rule-set (abstract general conventions plus concrete per-recurring-case rules) as two Markdown tables — printed in chat and saved to a versioned result file. Invoke as /induct-names followed by a directory, a list file, or several directories one per line, optionally --output <path>. Version v0.3.1.
 argument-hint: "<directory | list-file | one directory per line> [--output <path>]"
 disable-model-invocation: true
 allowed-tools: Read, Write, Glob, Bash, PowerShell
 ---
 
-# Filename Pattern Inductor (v0.3.0)
+# Filename Pattern Inductor (v0.3.1)
 
 Reverse-engineers a filename/placement rule-set from an existing, already-organized
 collection of files: point it at one or more folders and it infers "content like
@@ -63,6 +63,23 @@ path is a live example).
 Resolve every scan root to an absolute path. If one scan root is a subdirectory of
 another, keep only the outermost and say so.
 
+## Paths across shells
+
+On Windows, Git Bash spells `C:\Users` as `/c/Users` and WSL as `/mnt/c/Users`. A native
+Windows program (Python included) reads both as a path on the *current* drive (`D:\c\Users`),
+and an unquoted backslash path passed through Git Bash loses its separators (a file named
+`C:Users...` in the cwd). Both have created stray files and folders in real runs. So, for
+every path this skill writes to or passes on:
+
+- Write it absolute, with its drive letter and forward slashes: `C:/Users/...`. This one
+  form means the same thing to the `Write` tool, Git Bash, PowerShell and Python. Never
+  convert it to `/c/...` or `/mnt/c/...`.
+- Quote it in every shell command.
+- Write intermediate files only with the `Write` tool or the scripts under `scripts/` —
+  never with a shell redirect, a heredoc that creates a file, or ad-hoc Python. The
+  scripts normalize `/c/...` and `/mnt/c/...` and reject a rooted path without a drive.
+- Never write into the session cwd or a scan root.
+
 ## Guardrails (before reading any file content)
 
 1. Enumerate every file under each scan root recursively (`Glob` — files only,
@@ -87,10 +104,25 @@ another, keep only the outermost and say so.
    ~40 such files, batch them (~20–40 per batch) and delegate each batch to a
    parallel subagent (this session's Task/Agent-style subagent-dispatch tool, if
    available — otherwise fall back to reading them yourself in batches), instructing
-   each to return a compact structured summary per file: relative path, extension, a
-   short one-line content gist, and any recognizable entities (dates, vendor/sender
-   name, document type, invoice/reference numbers, category). Never have a subagent
-   return full raw file content back to you. **Do not use the `Workflow` tool** for
+   each to produce a compact structured summary per file: one JSON object per line
+   with `path` (relative), `ext`, `gist` (a short one-line content gist) and
+   `entities` (recognizable dates, vendor/sender name, document type,
+   invoice/reference numbers, category). Never have a subagent return full raw file
+   content back to you.
+
+   Before dispatching, fix **one results directory** yourself: `results/` under this
+   session's scratchpad directory if the environment names one, otherwise under the
+   OS temp directory — absolute, in `C:/...` form (see "Paths across shells"). Give
+   every subagent that exact string verbatim plus its batch number, and tell it to
+   save its lines with
+
+   ```
+   python "${CLAUDE_SKILL_DIR}/scripts/write_batch_result.py" --results-dir "<results dir>" --batch <N>
+   ```
+
+   piping the JSONL to it on stdin, and to return only the path the script prints.
+   Do not let a subagent choose, convert or invent a path, and do not let it write
+   the file any other way. Then read the `r<NNN>.jsonl` files back with `Read`. **Do not use the `Workflow` tool** for
    this — it requires the end user's own explicit per-session opt-in and must never
    be invoked automatically from inside a skill.
 3. Using filename, folder location, and content summary *together* — the correlation
@@ -128,8 +160,9 @@ another, keep only the outermost and say so.
    meaningfully accumulates versions when `--output` names a **stable** path across
    repeated runs (the realistic "keep the rule-set current" workflow). This is
    expected, not a bug — say so if the user seems to expect otherwise.
-6. Write the rendered preamble + two tables to a temporary file in the OS temp
-   directory (never inside a scanned directory — this skill runs against arbitrary
+6. Write the rendered preamble + two tables with the `Write` tool to a temporary file
+   in the session's scratchpad or the OS temp directory, in `C:/...` form (never
+   inside a scanned directory — this skill runs against arbitrary
    folders once installed and cannot assume write access or a scratch convention
    there).
 7. Run:
@@ -187,4 +220,8 @@ sections, in this order.
   see its own docstring for the algorithm. Do not replicate its logic by hand in
   step 7 above — always call it.
 - `scripts/test_save_versioned_result.py` — its test suite.
+- `scripts/write_batch_result.py` — writes one subagent's JSONL batch result to
+  `<results dir>/r<NNN>.jsonl` (step 2); validates lines, never overwrites.
+- `scripts/paths.py` — shared path normalization: maps `/c/...` and `/mnt/c/...` to
+  their drive, rejects rooted paths without a drive. Both scripts above use it.
 - `README.md` — human-facing usage guide + installation notes.
